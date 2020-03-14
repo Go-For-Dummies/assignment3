@@ -12,6 +12,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
                        MAXSIZE, coord_to_point
 import numpy as np
 import re
+from weighting import WeightUtil
 
 class GtpConnection():
 
@@ -29,6 +30,7 @@ class GtpConnection():
         self._debug_mode = debug_mode
         self.go_engine = go_engine
         self.board = board
+        self.WU = WeightUtil('/home/elake/go/assignment3/weights')
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -43,6 +45,7 @@ class GtpConnection():
             "list_commands": self.list_commands_cmd,
             "play": self.play_cmd,
             "legal_moves": self.legal_moves_cmd,
+            "get_index": self.index_cmd,
             "gogui-rules_game_id": self.gogui_rules_game_id_cmd,
             "gogui-rules_board_size": self.gogui_rules_board_size_cmd,
             "gogui-rules_legal_moves": self.gogui_rules_legal_moves_cmd,
@@ -211,6 +214,14 @@ class GtpConnection():
             gtp_moves.append(format_point(coords))
         sorted_moves = ' '.join(sorted(gtp_moves))
         self.respond(sorted_moves)
+
+    def index_cmd(self, args):
+        """
+        Print the index for a given move args[0]
+        """
+        coord = move_to_coord(args[0], self.board.size)
+        move = coord_to_point(coord[0], coord[1], self.board.size) 
+        self.respond(self.WU.getindex(self.board, move))
 
     def play_cmd(self, args):
         """
