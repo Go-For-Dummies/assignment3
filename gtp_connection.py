@@ -13,6 +13,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
 import numpy as np
 import re
 from weighting import WeightUtil
+from simulation import SimUtil
 
 class GtpConnection():
 
@@ -30,6 +31,7 @@ class GtpConnection():
         self._debug_mode = debug_mode
         self.go_engine = go_engine
         self.board = board
+        # Need to add bit here to get absolute path for weights file
         self.WU = WeightUtil('/home/elake/go/assignment3/weights')
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
@@ -46,6 +48,8 @@ class GtpConnection():
             "play": self.play_cmd,
             "legal_moves": self.legal_moves_cmd,
             "get_index": self.index_cmd,
+            "sim_rand": self.sim_rand_cmd,
+            "sim_prob": self.sim_prob_cmd,
             "gogui-rules_game_id": self.gogui_rules_game_id_cmd,
             "gogui-rules_board_size": self.gogui_rules_board_size_cmd,
             "gogui-rules_legal_moves": self.gogui_rules_legal_moves_cmd,
@@ -222,6 +226,21 @@ class GtpConnection():
         coord = move_to_coord(args[0], self.board.size)
         move = coord_to_point(coord[0], coord[1], self.board.size) 
         self.respond(self.WU.getindex(self.board, move))
+
+    def sim_rand_cmd(self, args):
+        """
+        Play a random simulation from the current position and print the winner
+        """
+        cboard = self.board.copy()
+        self.respond(SimUtil.randomSimulation(cboard))
+
+    def sim_prob_cmd(self, args):
+        """
+        Play a probability simulation from the current position and print the winner
+        """
+        cboard = self.board.copy()
+        self.respond(SimUtil.probabilitySimulation(cboard, self.WU))
+
 
     def play_cmd(self, args):
         """

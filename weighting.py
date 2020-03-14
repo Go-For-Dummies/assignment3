@@ -15,10 +15,10 @@ class WeightUtil:
 
     def getweight(self, index):
         """
-        Takes a base 4 index string and returns a weight for that move
+        Takes a base 4 index string and returns a float weight for that move
         """
         indexb10 = str(int(index, 4))
-        return self.weightdict[indexb10]
+        return float(self.weightdict[indexb10])
 
     def getindex(self, board, move):
         """
