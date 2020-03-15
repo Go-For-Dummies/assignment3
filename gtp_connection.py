@@ -12,6 +12,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
                        MAXSIZE, coord_to_point
 import numpy as np
 import re
+from pathlib import Path
 from weighting import WeightUtil
 from simulation import SimUtil
 
@@ -32,7 +33,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         # Need to add bit here to get absolute path for weights file
-        self.WU = WeightUtil('/home/elake/go/assignment3/weights')
+        self.WU = WeightUtil(Path('weights'))
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
