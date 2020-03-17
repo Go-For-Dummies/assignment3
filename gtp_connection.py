@@ -49,8 +49,6 @@ class GtpConnection():
             "play": self.play_cmd,
             "legal_moves": self.legal_moves_cmd,
             "get_index": self.index_cmd,
-            "sim_rand": self.sim_rand_cmd,
-            "sim_prob": self.sim_prob_cmd,
             "policy": self.set_policy, 
             "selection": self.set_selection, 
             "num_sim": self.set_n_sim,
@@ -234,20 +232,6 @@ class GtpConnection():
         coord = move_to_coord(args[0], self.board.size)
         move = coord_to_point(coord[0], coord[1], self.board.size) 
         self.respond(self.WU.getindex(self.board, move))
-
-    def sim_rand_cmd(self, args):
-        """
-        Play a random simulation from the current position and print the winner
-        """
-        cboard = self.board.copy()
-        self.respond(SimUtil.randomSimulation(cboard))
-
-    def sim_prob_cmd(self, args):
-        """
-        Play a probability simulation from the current position and print the winner
-        """
-        cboard = self.board.copy()
-        self.respond(SimUtil.probabilitySimulation(cboard, self.WU))
 
     def set_policy(self, args):
         policy = args[0]
