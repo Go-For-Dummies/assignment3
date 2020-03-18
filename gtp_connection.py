@@ -33,7 +33,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         # Need to add bit here to get absolute path for weights file
-        self.WU = WeightUtil(Path('weights'))
+
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -49,8 +49,10 @@ class GtpConnection():
             "play": self.play_cmd,
             "legal_moves": self.legal_moves_cmd,
             "get_index": self.index_cmd,
-            "sim_rand": self.sim_rand_cmd,
-            "sim_prob": self.sim_prob_cmd,
+            "policy": self.set_policy, 
+            "selection": self.set_selection, 
+            "num_sim": self.set_n_sim,
+            "policy_moves": self.policy_moves, 
             "gogui-rules_game_id": self.gogui_rules_game_id_cmd,
             "gogui-rules_board_size": self.gogui_rules_board_size_cmd,
             "gogui-rules_legal_moves": self.gogui_rules_legal_moves_cmd,
@@ -69,7 +71,10 @@ class GtpConnection():
             "known_command": (1, 'Usage: known_command CMD_NAME'),
             "genmove": (1, 'Usage: genmove {w,b}'),
             "play": (2, 'Usage: play {b,w} MOVE'),
-            "legal_moves": (1, 'Usage: legal_moves {w,b}')
+            "legal_moves": (1, 'Usage: legal_moves {w,b}'), 
+            "policy": (1, 'Usage: policy {random,pattern}'),
+            "selection:": (1, 'Usage: selection {rr, ucb}'),
+            "n_sim": (1, 'Usage: n_sim INT'),
         }
     
     def write(self, data):
@@ -228,20 +233,34 @@ class GtpConnection():
         move = coord_to_point(coord[0], coord[1], self.board.size) 
         self.respond(self.WU.getindex(self.board, move))
 
-    def sim_rand_cmd(self, args):
-        """
-        Play a random simulation from the current position and print the winner
-        """
-        cboard = self.board.copy()
-        self.respond(SimUtil.randomSimulation(cboard))
+    def set_policy(self, args):
+        policy = args[0]
+        try: 
+            self.go_engine.simulation_policy = policy
+            self.respond()
+        except AttributeError as e:
+            self.error(e)
 
-    def sim_prob_cmd(self, args):
-        """
-        Play a probability simulation from the current position and print the winner
-        """
-        cboard = self.board.copy()
-        self.respond(SimUtil.probabilitySimulation(cboard, self.WU))
+    def set_selection(self, args):
+        selection = args[0]
+        try: 
+            self.go_engine.move_selection = selection
+            self.respond()
+        except AttributeError as e:
+            self.error(e)
+            
 
+    def set_n_sim(self, args):
+        n_sim = args[0]
+        try: 
+            n_sim = int(args[0])
+            self.go_engine.n_sim = n_sim
+            self.respond() 
+        except ValueError as e:
+            self.error(e)
+
+    def policy_moves(self, args):
+        self.respond()
 
     def play_cmd(self, args):
         """
@@ -384,8 +403,8 @@ def format_point(move):
     """
     Return move coordinates as a string such as 'a1', or 'pass'.
     """
-    column_letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
-    #column_letters = "abcdefghjklmnopqrstuvwxyz"
+    # column_letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
+    column_letters = "abcdefghjklmnopqrstuvwxyz"
     if move == PASS:
         return "pass"
     row, col = move
