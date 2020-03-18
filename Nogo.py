@@ -1,5 +1,7 @@
 #!/usr/local/bin/python3
+#!/usr/bin/python3
 #/usr/bin/python3
+#/usr/local/bin/python3
 # Set the path to your python3 above
 from pathlib import Path
 
