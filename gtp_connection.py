@@ -260,7 +260,7 @@ class GtpConnection():
             self.error(e)
 
     def policy_moves(self, args):
-        self.respond()
+        self.respond(self.go_engine.policy_moves(self.board))
 
     def play_cmd(self, args):
         """
