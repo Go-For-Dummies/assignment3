@@ -5,7 +5,7 @@ class WeightUtil:
 
     def __init__(self, file):
 
-        file1 = open(file, 'r')
+        file1 = open(str(file), 'r')
         weightlist = file1.readlines()
         self.weightdict = {}
         for line in weightlist:
