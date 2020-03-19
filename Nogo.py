@@ -1,4 +1,3 @@
-#!/usr/local/bin/python3
 #!/usr/bin/python3
 #/usr/bin/python3
 #/usr/local/bin/python3
@@ -60,14 +59,14 @@ class Nogo():
     def move_selection(self, move_selection):
         if move_selection not in MOVE_POLICIES:
             raise AttributeError(
-                f'move selection method not implemented: {move_selection}')
+                'move selection method not implemented: {}'.format(move_selection))
         self._move_selection = move_selection
 
     @simulation_policy.setter
     def simulation_policy(self, simulation_policy):
         if simulation_policy not in SIMULATION_POLICIES:
             raise AttributeError(
-                f'simulation policy method not implemented: {simulation_policy}')
+                'simulation policy method not implemented: {}'.format(simulation_policy))
         self._simulation_policy = simulation_policy
     
     def get_move(self, board, color):
